@@ -1,0 +1,106 @@
+If you do not use the built-in authentication login logic of laravel-admin, you can refer to the following method to customize the login authentication logic
+
+First, define a user provider to obtain the user identity, such as app/Providers/CustomUserProvider.php:
+
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\UserProvider;
+
+class CustomUserProvider implements UserProvider
+{
+    public function retrieveById($identifier)
+    {}
+
+    public function retrieveByToken($identifier, $token)
+    {}
+
+    public function updateRememberToken(Authenticatable $user, $token)
+    {}
+
+    public function retrieveByCredentials(array $credentials)
+    {
+        // 
+        Use the username and password in $credentials to get user information, and then return the Illuminate\Contracts\Auth\Authenticatable object
+    }
+
+    public function validateCredentials(Authenticatable $user, array $credentials)
+    {
+        // Use the username and password in $credentials to verify the user and return true or false
+    }
+}
+
+
+In the methods retrieveByCredentials and validateCredentials, the incoming $credentials is the username and password array submitted by the login page, and then you can use $credentials to implement your own login logic
+
+Interface Illuminate\Contracts\Auth\Authenticatable 
+Is defined as follows：
+
+<?php
+
+namespace Illuminate\Contracts\Auth;
+
+interface Authenticatable {
+
+    public function getAuthIdentifierName();
+    public function getAuthIdentifier();
+    public function getAuthPassword();
+    public function getRememberToken();
+    public function setRememberToken($value);
+    public function getRememberTokenName();
+
+}
+
+For the explanation of each method of the above interface, refer to adding-custom-user-providers
+
+After defining the User provider, open app/Providers/AuthServiceProvider.php to register it:
+
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application authentication / authorization services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        Auth::provider('custom', function ($app, array $config) {
+
+            // Return an instance of Illuminate\Contracts\Auth\UserProvider...
+            return new CustomUserProvider();
+        });
+    }
+}
+
+
+Finally modify the configuration, open config/admin.php, find the auth part of the modification:
+
+    'auth' => [
+        'guards' => [
+            'admin' => [
+                'driver' => 'session',
+                'provider' => 'admin',
+            ]
+        ],
+
+        
+        // modify the following
+        'providers' => [
+            'admin' => [
+                'driver' => 'custom',
+            ]
+        ],
+    ],
+    
+This completes the logic of custom login authentication. Custom login is a more complicated part of laravel and requires the developer to have the patience to debug step by step.

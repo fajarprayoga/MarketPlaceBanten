@@ -1,0 +1,15 @@
+* Data pembeli tambah upload gambar untuk ktp ->done
+* menu kalender = kalender even ->done
+* tambah list pengayah -> user role baru ->done
+* banten di tambahkan upload image untuk di tampilkan di fe -> done
+* tambah status order nanti akan di proses oleh si pengayah -> done
+
+// tambah fe untuk pebeli 
+* beranda
+* kalender
+* banten
+* order -> kirim email pas order
+* order -> tambah upload bukti pembayaran
+
+
+password administrator = $2y$10$QDEk4b7Q.nikMX61XmE9Z.SHieo4t.ZZpxBtm5FNz3rpLD3YhlzxC

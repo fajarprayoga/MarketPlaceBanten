@@ -115,7 +115,7 @@
 					<td width="5%">{{$order->qty}}</td>
 					<td width="10%">{{number_format($order->harga * $order->qty,2)}}</td>
 					<td width="5%">{{$order->status}}</td>
-					@if($order->status == 'process')
+					@if($order->status == 'process' || $order->status == 'draft')
 						<td width="15%">
 							<form method="post" action="{{route('fe.uploadbuktiperrow')}}" enctype="multipart/form-data">
 							{{ csrf_field()}}
